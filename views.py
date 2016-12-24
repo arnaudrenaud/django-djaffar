@@ -3,6 +3,10 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.core.exceptions import ObjectDoesNotExist
 from dateutil import parser
+try:
+    from urllib.parse import urlparse
+except ImportError:
+    from urlparse import urlparse
 from django.conf import settings
 from django.contrib.sessions.models import Session
 
@@ -29,7 +33,8 @@ class TrackActivity(views.APIView):
                 session = None
         except KeyError:
             session = None
-        path = request.data.get('path')
+        path = (request.data.get('path') or
+                urlparse(request.META.get('HTTP_REFERER', '')).path)
         if not path:
             return Response(
                 'You must provide a path',
