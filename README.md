@@ -1,8 +1,7 @@
 # Djaffar: asynchronous user activity tracking for Django
-Have a single-page app? Want to keep track of what your users do even when they don't hit the server? Set up Djaffar on the server and hit the client API to save relevant user activity to the database: URL path, user name, browser session, IP address and referer.
+Have a single-page app? Want to keep track of what your users do even when they don't hit the server? Set up Djaffar on the server and hit the client API to save relevant user activity to the database: URL path, user name, browser session, user agent, IP address and referer.
 
-
-## Set up Djaffar on the server
+## Installation
 
 Add Djaffar to your project (typically in `settings.py`):
 ```python
@@ -23,7 +22,7 @@ urlpatterns = [
 ```
 
 Make sure the authentication classes you use for your users are specified in the Django Rest Framework settings (typically in `settings.py`):
-```
+```python
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         ...
@@ -32,7 +31,12 @@ REST_FRAMEWORK = {
 }
 ```
 
-## Use the Djaffar client API
+Run the database migration:
+```
+python manage.py migrate djaffar
+```
+
+## Client API usage
 
 This will ask Djaffar to write a record with the current date and URL path:
 ```javascript
@@ -44,7 +48,7 @@ xhr.send('date=' + new Date().toISOString() + '&path=' + window.location.pathnam
 
 ### Authentication
 
-- If you use session-based authentication, you're good already since your browser automatically sets cookies in the request headers.
+- If you use session-based authentication, the cookie is automatically set in the request headers by your browser.
 - But if you use token-based authentication, you'll need to set the token in the request headers, like so:
 ```
 ...
@@ -66,14 +70,14 @@ xhr.send(... + '&path=' + (window.location.href.split('#')[1] || '/'))
 xhr.send(... + '&path=' + window.location.pathname)
 ```
 
+## Accessing recorded activity
+
 ## Appendix
 
-### How Djaffar makes use of sessions
-Djaffar uses [Django sessions](https://docs.djangoproject.com/en/1.10/topics/http/sessions/) to keep track of browser session when recording user activity.
+### About sessions
+Djaffar uses [Django sessions](https://docs.djangoproject.com/en/1.10/topics/http/sessions/) to keep track of browser sessions when recording user activity. Depending on settings, sessions either expire when the user closes their browser or after a given age (see [Browser-length sessions vs. persistent sessions](https://docs.djangoproject.com/en/1.10/topics/http/sessions/#browser-length-vs-persistent-sessions)).
 
-Depending on settings, sessions either expire when the user closes their browser or after a given age (see [Browser-length sessions vs. persistent sessions](https://docs.djangoproject.com/en/1.10/topics/http/sessions/#browser-length-vs-persistent-sessions)).
-
-Whether your app uses session-based user authentication or not, Djaffar keeps track of browser session (and the associated user agent) in user activity tracking for two reasons:
+Whether your app uses session-based user authentication or not, Djaffar uses session (and the associated user agent) for two reasons:
 
 - Allowing you to distinguish between anonymous visitors
 - Allowing you to distinguish between visits by the same authenticated user through various devices
