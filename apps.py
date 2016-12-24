@@ -1,5 +1,5 @@
 from django.apps import AppConfig
 
 
-class BrowsingactivityConfig(AppConfig):
-    name = 'browsingactivity'
+class DjaffarConfig(AppConfig):
+    name = 'djaffar'

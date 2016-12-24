@@ -1,7 +1,7 @@
 from django.conf.urls import url
 
-from browsingactivity import views
+from . import views
 
 urlpatterns = [
-    url(r'^$', views.BrowsingActivities.as_view()),
+    url(r'^track/$', views.TrackActivity.as_view()),
 ]
