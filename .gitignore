@@ -1,2 +1,5 @@
 **/.DS_Store
 __pycache__/
+djaffarlab/
+manage.py
+db.sqlite3
