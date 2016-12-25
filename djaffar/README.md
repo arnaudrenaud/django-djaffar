@@ -63,7 +63,7 @@ If your client app relies on URL fragments for navigation, you'll need to manual
 xhr.send(... + '&path=' + (window.location.href.split('#')[1] || '/'))
 ```
 
-## Access to user activity logs
+## Accessing user activity logs
 
 ## Appendix
 
@@ -74,10 +74,3 @@ Whether your app uses session-based user authentication or not, Djaffar uses ses
 
 - Allowing you to distinguish between anonymous visitors
 - Allowing you to distinguish between visits by the same authenticated user through various devices
-
-## Packaging
-
-Convert `README.md` to `README.rst`:
-```
-pandoc --from=markdown --to=rst --output=README.rst README.md
-```
