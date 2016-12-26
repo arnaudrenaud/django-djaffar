@@ -36,7 +36,7 @@ Run the database migration:
 $ python manage.py migrate djaffar
 ```
 
-## Client API usage
+## Client API
 
 This will ask Djaffar to write a record with the current date:
 ```javascript
@@ -46,7 +46,7 @@ xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
 xhr.send('date=' + new Date().toISOString());
 ```
 
-### Authentication
+### User authentication
 
 - If you use session-based authentication, the cookie is automatically set in the request headers by your browser.
 - But if you use token-based authentication, you'll need to set the token in the request headers, like so:
@@ -63,7 +63,7 @@ If your client app relies on URL fragments for navigation, you'll need to manual
 xhr.send(... + '&path=' + (window.location.href.split('#')[1] || '/'))
 ```
 
-## Access to user activity logs
+## User activity logs
 
 ## Appendix
 
@@ -75,9 +75,14 @@ Whether your app uses session-based user authentication or not, Djaffar uses ses
 - Allowing you to distinguish between anonymous visitors
 - Allowing you to distinguish between visits by the same authenticated user through various devices
 
-## Packaging
+## Contributing
 
-Convert `README.md` to `README.rst`:
+Run tests (`tests/tests.py`) against the supported versions of Python and the required packages, as listed in `tox.ini`:
+```
+tox
+```
+
+Update `README.rst` documentation after `README.md`:
 ```
 pandoc --from=markdown --to=rst --output=README.rst README.md
 ```
