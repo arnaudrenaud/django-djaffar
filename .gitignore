@@ -4,3 +4,7 @@ djaffarlab/
 manage.py
 db.sqlite3
 *.pyc
+.eggs/
+*.egg-info
+venv*/
+.tox/

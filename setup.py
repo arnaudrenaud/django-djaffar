@@ -52,4 +52,5 @@ setup(
         'Programming Language :: Python :: 3.5',
         'Topic :: Internet :: WWW/HTTP',
     ],
+    test_suite="runtests.runtests",
 )
