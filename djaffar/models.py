@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.contrib.sessions.models import Session
 
 
-class UserActivity(models.Model):
+class Activity(models.Model):
     user = models.ForeignKey(User, null=True)
     session = models.ForeignKey(Session, null=True)
     ip_address = models.CharField(max_length=45, default='')

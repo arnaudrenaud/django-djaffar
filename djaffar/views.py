@@ -10,10 +10,10 @@ except ImportError:
 from django.conf import settings
 from django.contrib.sessions.models import Session
 
-from .models import UserActivity, SessionInfo
+from .models import Activity, SessionInfo
 
 
-class TrackActivity(views.APIView):
+class LogActivity(views.APIView):
 
     def post(self, request):
         if not request.session.exists(request.session.session_key):
@@ -54,7 +54,7 @@ class TrackActivity(views.APIView):
         if referer == 'NOT_FIRST_PAGE' or not referer:
             referer = ''
         ip_address = request.META.get('REMOTE_ADDR', '')
-        UserActivity.objects.create(
+        Activity.objects.create(
             user=user,
             session=session,
             ip_address=ip_address,
