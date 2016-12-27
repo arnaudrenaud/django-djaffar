@@ -38,12 +38,21 @@ $ python manage.py migrate djaffar
 
 ## Client API
 
-This will ask Djaffar to write a record with the current date:
+POST an activity log to Djaffar with the current date:
 ```javascript
 var xhr = new XMLHttpRequest();
 xhr.open('POST', '/djaffar/track/', true);
 xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
 xhr.send('date=' + new Date().toISOString());
+```
+
+You can then trigger this POST request everytime the URL changes, for instance.
+
+### Path and URL fragments
+If your client app relies on URL fragments for navigation, you'll need to manually set the `path` parameter when you hit Djaffar:
+```javascript
+...
+xhr.send(... + '&path=' + (window.location.href.split('#')[1] || '/'))
 ```
 
 ### User authentication
@@ -56,14 +65,9 @@ xhr.setRequestHeader('Authorization', 'Bearer F2naN20HpDv4tsJC0b1OhQZVDwRiEy');
 xhr.send(...)
 ```
 
-### Path and URL fragments
-If your client app relies on URL fragments for navigation, you'll need to manually set the `path` parameter when you hit Djaffar:
-```javascript
-...
-xhr.send(... + '&path=' + (window.location.href.split('#')[1] || '/'))
-```
+## Retrieving activity logs
 
-## User activity logs
+
 
 ## Appendix
 
@@ -75,14 +79,9 @@ Whether your app uses session-based user authentication or not, Djaffar uses ses
 - Allowing you to distinguish between anonymous visitors
 - Allowing you to distinguish between visits by the same authenticated user through various devices
 
-## Contributing
+## Tests
 
 Run tests (`tests/tests.py`) against the supported versions of Python and the required packages, as listed in `tox.ini`:
 ```
 tox
-```
-
-Update `README.rst` documentation after `README.md`:
-```
-pandoc --from=markdown --to=rst --output=README.rst README.md
 ```

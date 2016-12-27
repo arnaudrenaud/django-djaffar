@@ -49,10 +49,10 @@ Run the database migration:
 
     $ python manage.py migrate djaffar
 
-Client API usage
-----------------
+Client API
+----------
 
-This will ask Djaffar to write a record with the current date:
+POST an activity log to Djaffar with the current date:
 
 .. code:: javascript
 
@@ -61,19 +61,8 @@ This will ask Djaffar to write a record with the current date:
     xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
     xhr.send('date=' + new Date().toISOString());
 
-Authentication
-~~~~~~~~~~~~~~
-
--  If you use session-based authentication, the cookie is automatically
-   set in the request headers by your browser.
--  But if you use token-based authentication, you'll need to set the
-   token in the request headers, like so:
-
-   ::
-
-       ...
-       xhr.setRequestHeader('Authorization', 'Bearer F2naN20HpDv4tsJC0b1OhQZVDwRiEy');
-       xhr.send(...)
+You can then trigger this POST request everytime the URL changes, for
+instance.
 
 Path and URL fragments
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -86,8 +75,22 @@ to manually set the ``path`` parameter when you hit Djaffar:
     ...
     xhr.send(... + '&path=' + (window.location.href.split('#')[1] || '/'))
 
-Accessing user activity logs
-----------------------------
+User authentication
+~~~~~~~~~~~~~~~~~~~
+
+-  If you use session-based authentication, the cookie is automatically
+   set in the request headers by your browser.
+-  But if you use token-based authentication, you'll need to set the
+   token in the request headers, like so:
+
+   ::
+
+       ...
+       xhr.setRequestHeader('Authorization', 'Bearer F2naN20HpDv4tsJC0b1OhQZVDwRiEy');
+       xhr.send(...)
+
+Retrieving activity logs
+------------------------
 
 Appendix
 --------
@@ -108,3 +111,13 @@ uses session (and the associated user agent) for two reasons:
 -  Allowing you to distinguish between anonymous visitors
 -  Allowing you to distinguish between visits by the same authenticated
    user through various devices
+
+Tests
+-----
+
+Run tests (``tests/tests.py``) against the supported versions of Python
+and the required packages, as listed in ``tox.ini``:
+
+::
+
+    tox
