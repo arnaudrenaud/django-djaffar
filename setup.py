@@ -51,6 +51,7 @@ setup(
     description='An asynchronous user activity tracking API for Django.',
     long_description=README,
     url='https://github.com/arnaudrenaud/django-djaffar',
+    download_url='https://github.com/arnaudrenaud/django-djaffar/tarball/0.1.1',
     author='Arnaud Renaud',
     author_email='arnaud.renaud@gmail.com',
     install_requires=[
