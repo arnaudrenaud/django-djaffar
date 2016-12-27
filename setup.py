@@ -1,5 +1,4 @@
 import os
-import re
 from setuptools import find_packages, setup
 
 with open(os.path.join(os.path.dirname(__file__), 'README.rst')) as readme:
@@ -9,14 +8,6 @@ with open(os.path.join(os.path.dirname(__file__), 'README.rst')) as readme:
 os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 package = 'djaffar'
-
-def get_version(package):
-    """
-    Return package version as listed in `__version__` in `init.py`.
-    """
-    init_py = open(os.path.join(package, '__init__.py')).read()
-    return re.search("^__version__ = ['\"]([^'\"]+)['\"]",
-                     init_py, re.MULTILINE).group(1)
 
 
 def get_packages(package):
@@ -44,7 +35,7 @@ def get_package_data(package):
 
 setup(
     name='django-djaffar',
-    version=get_version(package),
+    version='0.1.4',
     packages=get_packages(package),
     package_data=get_package_data(package),
     include_package_data=True,
