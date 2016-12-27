@@ -43,7 +43,7 @@ def get_package_data(package):
 
 setup(
     name='django-djaffar',
-    version='0.1.0',
+    version=get_version(package),
     packages=get_packages(package),
     package_data=get_package_data(package),
     include_package_data=True,
@@ -51,7 +51,7 @@ setup(
     description='An asynchronous user activity tracking API for Django.',
     long_description=README,
     url='https://github.com/arnaudrenaud/django-djaffar',
-    download_url='https://github.com/arnaudrenaud/django-djaffar/tarball/0.1.1',
+    download_url='https://github.com/arnaudrenaud/django-djaffar/tarball/0.1.2',
     author='Arnaud Renaud',
     author_email='arnaud.renaud@gmail.com',
     install_requires=[

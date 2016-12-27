@@ -1,5 +1,9 @@
 # Djaffar: asynchronous user activity tracking for Django
+[![Build Status](https://travis-ci.org/arnaudrenaud/django-djaffar.svg?branch=master)](https://travis-ci.org/arnaudrenaud/django-djaffar)
+[![PyPI version](https://badge.fury.io/py/django-djaffar.svg)](https://badge.fury.io/py/django-djaffar)
+
 Want to keep track of what your users do even when they don't hit the server? Set up Djaffar on the server and POST a request to the client API to log user activity to the database, including URL path, user name, browser session, user agent, and IP address.
+
 
 ## Installation
 
@@ -41,7 +45,7 @@ $ python manage.py migrate djaffar
 POST an activity log to Djaffar with the current date:
 ```javascript
 var xhr = new XMLHttpRequest();
-xhr.open('POST', '/djaffar/track/', true);
+xhr.open('POST', '/djaffar/logs/', true);
 xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
 xhr.send('date=' + new Date().toISOString());
 ```
@@ -67,7 +71,9 @@ xhr.send(...)
 
 ## Retrieving activity logs
 
+Logs are stored as instances of the `Activity` model:
 
+![Accessing logs from the Django shell](https://trello-attachments.s3.amazonaws.com/5841a8e7863eaf470b1e5d57/585d6cb3d8336749a4162b7f/c6717d6623b04b3f791718c88e9f21a1/Screen_Shot_2016-12-27_at_10.15.08.png)
 
 ## Appendix
 
