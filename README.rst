@@ -11,6 +11,12 @@ browser session, user agent, and IP address.
 Installation
 ------------
 
+Install with ``pip``:
+
+::
+
+    pip install django-djaffar
+
 Add Djaffar to your project (typically in ``settings.py``):
 
 .. code:: python

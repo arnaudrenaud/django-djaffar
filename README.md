@@ -7,6 +7,11 @@ Want to keep track of what your users do even when they don't hit the server? Se
 
 ## Installation
 
+Install with `pip`:
+```
+pip install django-djaffar
+```
+
 Add Djaffar to your project (typically in `settings.py`):
 ```python
 INSTALLED_APPS = [
