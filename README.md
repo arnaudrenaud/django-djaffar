@@ -2,7 +2,7 @@
 [![Build Status](https://travis-ci.org/arnaudrenaud/django-djaffar.svg?branch=master)](https://travis-ci.org/arnaudrenaud/django-djaffar)
 [![PyPI version](https://badge.fury.io/py/django-djaffar.svg)](https://badge.fury.io/py/django-djaffar)
 
-Want to keep track of what your users do even when they don't hit the server? Set up Djaffar on the server and POST a request to the client API to log user activity to the database, including URL path, user name, browser session, user agent, and IP address.
+Want to keep track of what your users do even when they don't hit the server? Set up Djaffar on the server and make a request to the client API to log user activity to the database, including URL path, user name, browser session, user agent, and IP address.
 
 
 ## Installation
@@ -47,7 +47,7 @@ $ python manage.py migrate djaffar
 
 ## Client API
 
-POST an activity log to Djaffar with the current date:
+Request Djaffar to log an activity with the current date:
 ```javascript
 var xhr = new XMLHttpRequest();
 xhr.open('POST', '/djaffar/logs/', true);
@@ -55,7 +55,7 @@ xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
 xhr.send('date=' + new Date().toISOString());
 ```
 
-You can then trigger this POST request everytime the URL changes, for instance.
+You can then trigger this request everytime the URL changes, for instance.
 
 ### Path and URL fragments
 If your client app relies on URL fragments for navigation, you'll need to manually set the `path` parameter when you hit Djaffar:
@@ -68,7 +68,7 @@ xhr.send(... + '&path=' + (window.location.href.split('#')[1] || '/'))
 
 - If you use session-based authentication, the cookie is automatically set in the request headers by your browser.
 - But if you use token-based authentication, you'll need to set the token in the request headers, like so:
-```
+```javascript
 ...
 xhr.setRequestHeader('Authorization', 'Bearer F2naN20HpDv4tsJC0b1OhQZVDwRiEy');
 xhr.send(...)
