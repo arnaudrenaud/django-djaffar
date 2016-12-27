@@ -47,7 +47,7 @@ setup(
     author='Arnaud Renaud',
     author_email='arnaud.renaud@gmail.com',
     install_requires=[
-        'Django>=1.7',
+        'Django>=1.8',
         'djangorestframework>=3',
         'python-dateutil>=2.6',
     ],
