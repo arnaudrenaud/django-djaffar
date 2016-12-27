@@ -5,13 +5,13 @@ from django.contrib.auth.models import User
 from django.contrib.sessions.models import Session
 
 
-class BrowsingActivity(models.Model):
+class Activity(models.Model):
     user = models.ForeignKey(User, null=True)
     session = models.ForeignKey(Session, null=True)
     ip_address = models.CharField(max_length=45, default='')
-    date_time = models.DateTimeField()
+    date = models.DateTimeField()
     path = models.CharField(max_length=1000)
-    referrer = models.CharField(max_length=160, default='')
+    referer = models.CharField(max_length=160, default='')
 
     def __str__(self):
         try:
@@ -24,7 +24,7 @@ class BrowsingActivity(models.Model):
             session = 'NOSESSION'
         return '{0}, {1}, {2}, {3}, {4}, {5}'.format(
             user, session, self.ip_address,
-            self.date_time, self.path, self.referrer)
+            self.date, self.path, self.referer)
 
 
 class SessionInfo(models.Model):

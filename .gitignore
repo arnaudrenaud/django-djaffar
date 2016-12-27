@@ -1,2 +1,12 @@
 **/.DS_Store
 __pycache__/
+djaffarlab/
+manage.py
+db.sqlite3
+venv*/
+*.pyc
+.eggs/
+*.egg-info/
+.tox/
+build/
+dist/
