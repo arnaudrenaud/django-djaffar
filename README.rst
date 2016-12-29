@@ -193,7 +193,7 @@ Logs are stored as instances of the ``Activity`` model (in
 |                   | ``Session``  |                   |
 |                   | model        |                   |
 +-------------------+--------------+-------------------+
-| ``ip_address``    | User         | ``CharField``     |
+| ``ip_address``    | User IP      | ``CharField``     |
 +-------------------+--------------+-------------------+
 | ``date``          | User         | ``DateTimeField`` |
 |                   | activity     |                   |
