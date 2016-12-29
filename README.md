@@ -95,7 +95,7 @@ Logs are stored as instances of the `Activity` model (in `djaffar.models`) and h
 | ---------------- | ----------- | ---------------- |
 | `user` | Instance of the `User` model if authenticated, `None` otherwise | `ForeignKey` |
 | `session` | User browser session, instance of the `Session` model | `ForeignKey` |
-| `ip_address` | User | `CharField` |
+| `ip_address` | User IP | `CharField` |
 | `date` | User activity date and time | `DateTimeField` |
 | `path` | User activity path | `CharField` |
 | `referer` | User activity referer | `CharField` |
