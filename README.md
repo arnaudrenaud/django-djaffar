@@ -2,8 +2,12 @@
 [![Build Status](https://travis-ci.org/arnaudrenaud/django-djaffar.svg?branch=master)](https://travis-ci.org/arnaudrenaud/django-djaffar)
 [![PyPI version](https://badge.fury.io/py/django-djaffar.svg)](https://badge.fury.io/py/django-djaffar)
 
-Want to keep track of what your users do even when they don't hit the server? Set up Djaffar on the server and make a request to the client API to log user activity to the database, including URL path, user name, browser session, user agent, and IP address.
+Want to keep track of what your users do even when they don't hit the server? Set up Djaffar on the server and make a request to the client API to log user activity to the database, including URI path, user name, browser session, IP address and user agent.
 
+
+## Requirements
+
+Django (1.8, 1.9, 1.10).
 
 ## Installation
 
@@ -47,6 +51,17 @@ $ python manage.py migrate djaffar
 
 ## Client API
 
+When sending a POST request to Djaffar to log activity, you should care about the following properties:
+
+| Property name | Mandatory | Type | Format | Example | Usage |
+| ------------- | --------- | ---- | ------ | ------- | ----- |
+| `date`   | Yes       | Form data | ISO 8601 | `2016-12-29T07:35:22.571Z` | Represents the date and time when the log request is initiated. |
+| `path`   | No        | Form data | - | `users/me/cart/` | Represents the path taken by the user. If not specified, the referer *from the request headers* (not the `referer` form data property) will be used in place. |
+| `referer` | No        | Form data | - | `https://www.google.com/` | Represents the domain the user comes from. |
+
+### Examples
+
+#### Basic log
 Request Djaffar to log an activity with the current date:
 ```javascript
 var xhr = new XMLHttpRequest();
@@ -55,16 +70,14 @@ xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
 xhr.send('date=' + new Date().toISOString());
 ```
 
-You can then trigger this request everytime the URL changes, for instance.
-
-### Path and URL fragments
+#### URL fragments
 If your client app relies on URL fragments for navigation, you'll need to manually set the `path` parameter when you hit Djaffar:
 ```javascript
 ...
 xhr.send(... + '&path=' + (window.location.href.split('#')[1] || '/'))
 ```
 
-### User authentication
+#### User authentication
 
 - If you use session-based authentication, the cookie is automatically set in the request headers by your browser.
 - But if you use token-based authentication, you'll need to set the token in the request headers, like so:
@@ -76,9 +89,24 @@ xhr.send(...)
 
 ## Retrieving activity logs
 
-Logs are stored as instances of the `Activity` model:
+Logs are stored as instances of the `Activity` model (in `djaffar.models`) and have the following properties:
+
+| Model field name | Description | Model field type |
+| ---------------- | ----------- | ---------------- |
+| `user` | Instance of the `User` model if authenticated, `None` otherwise | `ForeignKey` |
+| `session` | User browser session, instance of the `Session` model | `ForeignKey` |
+| `ip_address` | User | `CharField` |
+| `date` | User activity date and time | `DateTimeField` |
+| `path` | User activity path | `CharField` |
+| `referer` | User activity referer | `CharField` |
 
 ![Accessing logs from the Django shell](https://trello-attachments.s3.amazonaws.com/5841a8e7863eaf470b1e5d57/585d6cb3d8336749a4162b7f/c6717d6623b04b3f791718c88e9f21a1/Screen_Shot_2016-12-27_at_10.15.08.png)
+
+Djaffar also adds the `SessionInfo` model, linked to the `Session` model through a foreign key, with the following properties:
+
+| Model field name | Description | Model field type |
+| ---------------- | ----------- | ---------------- |
+| `user_agent`     | User agent of the browser session | `CharField` |
 
 ## Appendix
 
