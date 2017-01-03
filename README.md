@@ -108,6 +108,12 @@ Djaffar also adds the `SessionInfo` model, linked to the `Session` model through
 | ---------------- | ----------- | ---------------- |
 | `user_agent`     | User agent of the browser session | `CharField` |
 
+You can get JSON dumps of the activity logs and the session info with Django's standard `dumpdata` command:
+```
+python manage.py dumpdata djaffar.Activity --indent=2 > djaffar-activity.json
+python manage.py dumpdata djaffar.SessionInfo --indent=2 > djaffar-sessioninfo.json
+```
+
 ## Appendix
 
 ### About sessions
