@@ -56,7 +56,7 @@ class TestViews(TestCase):
             },
             HTTP_REFERER='/',
         )
-        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.status_code, 204)
         self.assertEqual(
             self.client.session.session_key,
             client_session_key_before_post,
@@ -88,7 +88,7 @@ class TestViews(TestCase):
                 'path': '/',
             },
         )
-        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.status_code, 204)
         self.assertEqual(
             self.client.session.session_key,
             client_session_key_before_post,
@@ -121,7 +121,7 @@ class TestViews(TestCase):
             },
             HTTP_REFERER='/',
         )
-        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.status_code, 204)
         self.assertEqual(
             self.client.session.session_key,
             client_session_key_before_post,
@@ -154,7 +154,7 @@ class TestViews(TestCase):
             },
             HTTP_REFERER='/',
         )
-        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.status_code, 204)
         self.assertNotEqual(
             self.client.session.session_key,
             client_old_session_key,
@@ -194,7 +194,7 @@ class TestViews(TestCase):
             },
             HTTP_REFERER='/',
         )
-        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.status_code, 204)
         self.assertEqual(
             client_session_key_before_post,
             self.client.session.session_key,
@@ -231,7 +231,7 @@ class TestViews(TestCase):
             },
             HTTP_REFERER='/',
         )
-        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.status_code, 204)
         self.assertEqual(
             self.client.session.session_key,
             client_session_key_before_post,
