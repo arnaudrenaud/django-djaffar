@@ -1,7 +1,7 @@
 from django.conf.urls import url
 
-from .views import LogActivity
+from .views import ActivityDetail
 
 urlpatterns = [
-    url(r'^logs/$', LogActivity.as_view()),
+    url(r'^logs/$', ActivityDetail.as_view(), name='activity_detail'),
 ]

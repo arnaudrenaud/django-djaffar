@@ -1,5 +1,6 @@
 from django.test import TestCase
 from django.test.client import Client
+from django.core.urlresolvers import reverse
 from django.contrib.sessions.backends.db import SessionStore
 from django.contrib import auth
 import datetime
@@ -12,9 +13,13 @@ class TestViews(TestCase):
     def setUp(self):
         self.client = Client()
 
+    def test_activity_detail_url(self):
+        url = reverse('activity_detail')
+        self.assertEqual(url, '/djaffar/logs/')
+
     def test_log_get(self):
         client_session_key_before_post = self.client.session.session_key
-        response = self.client.get('/djaffar/logs/')
+        response = self.client.get(reverse('activity_detail'))
         self.assertEqual(response.status_code, 405)
         self.assertEqual(Activity.objects.count(), 0)
         self.assertEqual(
@@ -24,7 +29,7 @@ class TestViews(TestCase):
 
     def test_log_post_blank(self):
         client_session_key_before_post = self.client.session.session_key
-        response = self.client.post('/djaffar/logs/')
+        response = self.client.post(reverse('activity_detail'))
         self.assertEqual(response.status_code, 400)
         self.assertEqual(Activity.objects.count(), 0)
         self.assertEqual(
@@ -35,7 +40,7 @@ class TestViews(TestCase):
     def test_log_post_date(self):
         client_session_key_before_post = self.client.session.session_key
         response = self.client.post(
-            '/djaffar/logs/',
+            reverse('activity_detail'),
             {
                 'date': datetime.datetime.utcnow().isoformat(),
             },
@@ -50,7 +55,7 @@ class TestViews(TestCase):
     def test_log_post_date_referer(self):
         client_session_key_before_post = self.client.session.session_key
         response = self.client.post(
-            '/djaffar/logs/',
+            reverse('activity_detail'),
             {
                 'date': datetime.datetime.utcnow().isoformat(),
             },
@@ -82,7 +87,7 @@ class TestViews(TestCase):
     def test_log_post_date_path(self):
         client_session_key_before_post = self.client.session.session_key
         response = self.client.post(
-            '/djaffar/logs/',
+            reverse('activity_detail'),
             {
                 'date': datetime.datetime.utcnow().isoformat(),
                 'path': '/',
@@ -114,7 +119,7 @@ class TestViews(TestCase):
     def test_log_post_date_referer_path(self):
         client_session_key_before_post = self.client.session.session_key
         response = self.client.post(
-            '/djaffar/logs/',
+            reverse('activity_detail'),
             {
                 'date': datetime.datetime.utcnow().isoformat(),
                 'path': 'specified/path/',
@@ -148,7 +153,7 @@ class TestViews(TestCase):
         client_old_session_key = self.client.session.session_key
         self.client.session.delete()
         response = self.client.post(
-            '/djaffar/logs/',
+            reverse('activity_detail'),
             {
                 'date': datetime.datetime.utcnow().isoformat(),
             },
@@ -188,7 +193,7 @@ class TestViews(TestCase):
         )
         client_session_key_before_post = self.client.session.session_key
         response = self.client.post(
-            '/djaffar/logs/',
+            reverse('activity_detail'),
             {
                 'date': datetime.datetime.utcnow().isoformat(),
             },
@@ -224,7 +229,7 @@ class TestViews(TestCase):
     def test_log_post_referer_header_and_parameter(self):
         client_session_key_before_post = self.client.session.session_key
         response = self.client.post(
-            '/djaffar/logs/',
+            reverse('activity_detail'),
             {
                 'date': datetime.datetime.utcnow().isoformat(),
                 'referer': 'https://google.com',

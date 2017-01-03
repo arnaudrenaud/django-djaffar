@@ -14,7 +14,7 @@ from .models import Activity, SessionInfo
 
 
 
-class LogActivity(views.APIView):
+class ActivityDetail(views.APIView):
 
     def _session(self, request):
         if not request.session.exists(request.session.session_key):
