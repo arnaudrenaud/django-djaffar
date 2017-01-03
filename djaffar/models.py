@@ -11,7 +11,7 @@ class Activity(models.Model):
     ip_address = models.CharField(max_length=45, default='')
     date = models.DateTimeField()
     path = models.CharField(max_length=1000)
-    referer = models.CharField(max_length=160, default='')
+    referer = models.CharField(max_length=160, default='', blank=True)
 
     def __str__(self):
         try:
@@ -28,7 +28,7 @@ class Activity(models.Model):
 
 
 class SessionInfo(models.Model):
-    session = models.OneToOneField(
+    session = models.ForeignKey(
         Session,
         primary_key=True)
-    user_agent = models.CharField(max_length=1000)
+    user_agent = models.CharField(max_length=1000, blank=True)

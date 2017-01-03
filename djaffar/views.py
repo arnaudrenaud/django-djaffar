@@ -1,67 +1,76 @@
-from rest_framework import views
+from rest_framework import views, serializers, status
 from rest_framework.response import Response
-from rest_framework import status
-from django.core.exceptions import ObjectDoesNotExist
-from dateutil import parser
-try:
-    from urllib.parse import urlparse
-except ImportError:
-    from urlparse import urlparse
 from django.conf import settings
 from django.contrib.sessions.models import Session
 
 from .models import Activity, SessionInfo
 
 
+class ActivitySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Activity
+        fields = '__all__'
+
+
+class SessionInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SessionInfo
+        fields = '__all__'
+
+
+def get_user_pk(user):
+    if user.is_anonymous():
+        return None
+    return user.pk
+
+def get_path(path, referer):
+    if not path:
+        return referer
+    return path
+
 
 class ActivityDetail(views.APIView):
 
-    def _session(self, request):
+    def _set_new_session(self, request):
+        request.session.create()
+        return request.session.session_key
+
+    def _get_session(self, request):
         if not request.session.exists(request.session.session_key):
-            request.session.create()
-            session = Session.objects.get(pk=request.session.session_key)
-            SessionInfo.objects.get_or_create(
-                session=session,
-                user_agent=request.META.get('HTTP_USER_AGENT', ''))
+            return self._set_new_session(request)
+        return request.session.session_key
+
+    def _save_activity(self, request):
+        serializer = ActivitySerializer(data={
+            'user': get_user_pk(request.user),
+            'session': self._get_session(request),
+            'ip_address': request.META.get('REMOTE_ADDR', ''),
+            'date': request.data.get('date', ''),
+            'path': get_path(
+                request.data.get('path', ''),
+                request.META.get('HTTP_REFERER', ''),
+            ),
+            'referer': request.data.get('referer', ''),
+        })
+        if not serializer.is_valid():
+            return {'errors': serializer.errors}
+        serializer.save()
+        return serializer.instance
+
+    def _save_session_info_if_new(self, request):
+        session_key = Session.objects.get(pk=request.session.session_key)
         try:
-            session_id = request.session.session_key
-            try:
-                session = Session.objects.get(pk=session_id)
-            except ObjectDoesNotExist:
-                session = None
-        except KeyError:
-            session = None
-        return session
+            session_info = SessionInfo.objects.get(session=session_key)
+        except SessionInfo.DoesNotExist:
+            session_info = SessionInfo.objects.create(
+                session=session_key,
+                user_agent=request.META.get('HTTP_USER_AGENT', ''),
+            )
+        return session_info
 
     def post(self, request):
-        user = request.user
-        if user.is_anonymous():
-            user = None
-        session = self._session(request)
-        ip_address = request.META.get('REMOTE_ADDR', '')
-        dt = request.data.get('date')
-        if not dt:
-            return Response(
-                'You must provide a date',
-                status=status.HTTP_400_BAD_REQUEST)
-        try:
-            date = parser.parse(dt)
-        except ValueError:
-                return Response(
-                    'You must provide a valid date',
-                    status=status.HTTP_400_BAD_REQUEST)
-        path = (request.data.get('path') or
-                urlparse(request.META.get('HTTP_REFERER', '')).path)
-        if not path:
-            return Response(
-                'You must provide a path',
-                status=status.HTTP_400_BAD_REQUEST)
-        referer = request.data.get('referer', '')
-        Activity.objects.create(
-            user=user,
-            session=session,
-            ip_address=ip_address,
-            date=date,
-            path=path,
-            referer=referer)
+        activity = self._save_activity(request)
+        if isinstance(activity, dict) and 'errors' in activity:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        self._save_session_info_if_new(request)
         return Response(status=status.HTTP_204_NO_CONTENT)
