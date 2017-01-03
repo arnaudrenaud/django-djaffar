@@ -55,9 +55,9 @@ When sending a POST request to Djaffar to log activity, you should care about th
 
 | Property name | Mandatory | Type | Format | Example | Usage |
 | ------------- | --------- | ---- | ------ | ------- | ----- |
-| `date`   | Yes       | Form data | ISO 8601 | `2016-12-29T07:35:22.571Z` | Represents the date and time when the log request is initiated. |
-| `path`   | No        | Form data | - | `users/me/cart/` | Represents the path taken by the user. If not specified, the referer *from the request headers* (not the `referer` form data property) will be used in place. |
-| `referer` | No        | Form data | - | `https://www.google.com/` | Represents the domain the user comes from. |
+| `date`   | Yes       | Form data | ISO 8601 | `2016-12-29T07:35:22.571Z` | Date and time when the log request is initiated. |
+| `path`   | No        | Form data | - | `users/me/cart/` | URL path taken by the user. If not specified, the referer *from the request headers* (not the `referer` form data property) will be used in place. |
+| `referer` | No        | Form data | - | `https://www.google.com/` | URL of the page the user comes from (if any). |
 
 ### Examples
 
