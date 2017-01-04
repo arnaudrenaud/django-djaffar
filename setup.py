@@ -48,7 +48,7 @@ setup(
     author_email='arnaud.renaud@gmail.com',
     install_requires=[
         'Django>=1.8',
-        'djangorestframework>=3',
+        'djangorestframework>=3.3',
         'python-dateutil>=2.6',
     ],
     classifiers=[
