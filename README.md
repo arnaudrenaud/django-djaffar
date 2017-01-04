@@ -7,7 +7,8 @@ Want to keep track of what your users do even when they don't hit the server? Se
 
 ## Requirements
 
-Django (1.8, 1.9, 1.10).
+- Django (1.8, 1.9, 1.10)
+- Django Rest Framework (3.3, 3.4, 3.5)
 
 ## Installation
 
