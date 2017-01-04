@@ -5,40 +5,44 @@ from django.contrib.sessions.backends.db import SessionStore
 from django.contrib import auth
 import datetime
 import re
+import json
 
 from djaffar.models import Activity
 
 
-class TestViews(TestCase):
+class TestUrlMapping(TestCase):
+    def test_activity_detail_url(self):
+        self.assertEqual(reverse('activity_detail'), '/djaffar/log/')
+
+
+class TestLogActivityAsAnonymousUser(TestCase):
     def setUp(self):
         self.client = Client()
-
-    def test_activity_detail_url(self):
-        url = reverse('activity_detail')
-        self.assertEqual(url, '/djaffar/logs/')
+        self.initial_session = self.client.session.session_key
 
     def test_log_get(self):
-        client_session_key_before_post = self.client.session.session_key
         response = self.client.get(reverse('activity_detail'))
         self.assertEqual(response.status_code, 405)
         self.assertEqual(Activity.objects.count(), 0)
         self.assertEqual(
             self.client.session.session_key,
-            client_session_key_before_post,
+            self.initial_session,
         )
 
     def test_log_post_blank(self):
-        client_session_key_before_post = self.client.session.session_key
         response = self.client.post(reverse('activity_detail'))
         self.assertEqual(response.status_code, 400)
+        self.assertTrue(
+            'date' in json.loads(response.content)['errors'],
+            'path' in json.loads(response.content)['errors'],
+        )
         self.assertEqual(Activity.objects.count(), 0)
         self.assertEqual(
             self.client.session.session_key,
-            client_session_key_before_post,
+            self.initial_session,
         )
 
     def test_log_post_date(self):
-        client_session_key_before_post = self.client.session.session_key
         response = self.client.post(
             reverse('activity_detail'),
             {
@@ -46,14 +50,16 @@ class TestViews(TestCase):
             },
         )
         self.assertEqual(response.status_code, 400)
+        self.assertTrue(
+            'path' in json.loads(response.content)['errors'],
+        )
         self.assertEqual(Activity.objects.count(), 0)
         self.assertEqual(
             self.client.session.session_key,
-            client_session_key_before_post,
+            self.initial_session,
         )
 
     def test_log_post_date_referer(self):
-        client_session_key_before_post = self.client.session.session_key
         response = self.client.post(
             reverse('activity_detail'),
             {
@@ -64,7 +70,7 @@ class TestViews(TestCase):
         self.assertEqual(response.status_code, 204)
         self.assertEqual(
             self.client.session.session_key,
-            client_session_key_before_post,
+            self.initial_session,
         )
         self.assertEqual(Activity.objects.count(), 1)
         activity_obj = Activity.objects.first()
@@ -85,7 +91,6 @@ class TestViews(TestCase):
         self.assertFalse(activity_obj.referer)
 
     def test_log_post_date_path(self):
-        client_session_key_before_post = self.client.session.session_key
         response = self.client.post(
             reverse('activity_detail'),
             {
@@ -96,7 +101,7 @@ class TestViews(TestCase):
         self.assertEqual(response.status_code, 204)
         self.assertEqual(
             self.client.session.session_key,
-            client_session_key_before_post,
+            self.initial_session,
         )
         self.assertEqual(Activity.objects.count(), 1)
         activity_obj = Activity.objects.first()
@@ -117,7 +122,6 @@ class TestViews(TestCase):
         self.assertFalse(activity_obj.referer)
 
     def test_log_post_date_referer_path(self):
-        client_session_key_before_post = self.client.session.session_key
         response = self.client.post(
             reverse('activity_detail'),
             {
@@ -129,7 +133,7 @@ class TestViews(TestCase):
         self.assertEqual(response.status_code, 204)
         self.assertEqual(
             self.client.session.session_key,
-            client_session_key_before_post,
+            self.initial_session,
         )
         self.assertEqual(Activity.objects.count(), 1)
         activity_obj = Activity.objects.first()
@@ -182,52 +186,7 @@ class TestViews(TestCase):
         )
         self.assertFalse(activity_obj.referer)
 
-    def test_log_post_authenticated_user(self):
-        user = auth.models.User.objects.create_user(
-            username='jeff',
-            password='koons',
-        )
-        self.client.login(
-            username='jeff',
-            password='koons',
-        )
-        client_session_key_before_post = self.client.session.session_key
-        response = self.client.post(
-            reverse('activity_detail'),
-            {
-                'date': datetime.datetime.utcnow().isoformat(),
-            },
-            HTTP_REFERER='/',
-        )
-        self.assertEqual(response.status_code, 204)
-        self.assertEqual(
-            client_session_key_before_post,
-            self.client.session.session_key,
-        )
-        self.assertEqual(Activity.objects.count(), 1)
-        activity_obj = Activity.objects.first()
-        self.assertTrue(activity_obj.user)
-        self.assertEqual(
-            activity_obj.user.username,
-            user.username,
-        )
-        self.assertEqual(
-            activity_obj.session.session_key,
-            self.client.session.session_key,
-        )
-        self.assertTrue(re.match(
-            r'^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$',
-            activity_obj.ip_address,
-        ))
-        self.assertTrue(activity_obj.date)
-        self.assertEqual(
-            activity_obj.path,
-            '/',
-        )
-        self.assertFalse(activity_obj.referer)
-
     def test_log_post_referer_header_and_parameter(self):
-        client_session_key_before_post = self.client.session.session_key
         response = self.client.post(
             reverse('activity_detail'),
             {
@@ -239,7 +198,7 @@ class TestViews(TestCase):
         self.assertEqual(response.status_code, 204)
         self.assertEqual(
             self.client.session.session_key,
-            client_session_key_before_post,
+            self.initial_session,
         )
         self.assertEqual(Activity.objects.count(), 1)
         activity_obj = Activity.objects.first()
@@ -261,3 +220,52 @@ class TestViews(TestCase):
             activity_obj.referer,
             'https://google.com',
         )
+
+
+class TestLogActivityAsAuthenticatedUser(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = auth.models.User.objects.create_user(
+            username='jeff',
+            password='koons',
+        )
+        self.client.login(
+            username='jeff',
+            password='koons',
+        )
+        self.initial_session = self.client.session.session_key
+
+    def test_log_post(self):
+        response = self.client.post(
+            reverse('activity_detail'),
+            {
+                'date': datetime.datetime.utcnow().isoformat(),
+            },
+            HTTP_REFERER='/',
+        )
+        self.assertEqual(response.status_code, 204)
+        self.assertEqual(
+            self.initial_session,
+            self.client.session.session_key,
+        )
+        self.assertEqual(Activity.objects.count(), 1)
+        activity_obj = Activity.objects.first()
+        self.assertTrue(activity_obj.user)
+        self.assertEqual(
+            activity_obj.user.username,
+            self.user.username,
+        )
+        self.assertEqual(
+            activity_obj.session.session_key,
+            self.client.session.session_key,
+        )
+        self.assertTrue(re.match(
+            r'^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$',
+            activity_obj.ip_address,
+        ))
+        self.assertTrue(activity_obj.date)
+        self.assertEqual(
+            activity_obj.path,
+            '/',
+        )
+        self.assertFalse(activity_obj.referer)
