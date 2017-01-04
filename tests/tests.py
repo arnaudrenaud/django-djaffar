@@ -5,7 +5,6 @@ from django.contrib.sessions.backends.db import SessionStore
 from django.contrib import auth
 import datetime
 import re
-import json
 
 from djaffar.models import Activity
 
@@ -32,10 +31,6 @@ class TestLogActivityAsAnonymousUser(TestCase):
     def test_log_post_blank(self):
         response = self.client.post(reverse('activity_detail'))
         self.assertEqual(response.status_code, 400)
-        self.assertTrue(
-            'date' in json.loads(response.content)['errors'],
-            'path' in json.loads(response.content)['errors'],
-        )
         self.assertEqual(Activity.objects.count(), 0)
         self.assertEqual(
             self.client.session.session_key,
@@ -50,9 +45,6 @@ class TestLogActivityAsAnonymousUser(TestCase):
             },
         )
         self.assertEqual(response.status_code, 400)
-        self.assertTrue(
-            'path' in json.loads(response.content)['errors'],
-        )
         self.assertEqual(Activity.objects.count(), 0)
         self.assertEqual(
             self.client.session.session_key,
