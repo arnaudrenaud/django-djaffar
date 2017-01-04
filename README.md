@@ -66,7 +66,7 @@ When sending a POST request to Djaffar to log activity, you should care about th
 Request Djaffar to log an activity with the current date:
 ```javascript
 var xhr = new XMLHttpRequest();
-xhr.open('POST', '/djaffar/logs/', true);
+xhr.open('POST', '/djaffar/log/', true);
 xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
 xhr.send('date=' + new Date().toISOString());
 ```
