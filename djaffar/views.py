@@ -71,6 +71,9 @@ class ActivityDetail(views.APIView):
     def post(self, request):
         activity = self._save_activity(request)
         if isinstance(activity, dict) and 'errors' in activity:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                activity,
+                status=status.HTTP_400_BAD_REQUEST,
+            )
         self._save_session_info_if_new(request)
         return Response(status=status.HTTP_204_NO_CONTENT)
