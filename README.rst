@@ -11,7 +11,8 @@ browser session, IP address and user agent.
 Requirements
 ------------
 
-Django (1.8, 1.9, 1.10).
+-  Django (1.8, 1.9, 1.10)
+-  Django Rest Framework (3.3, 3.4, 3.5)
 
 Installation
 ------------
@@ -71,13 +72,10 @@ about the following properties:
 +----------------+------------+-------+---------+----------+--------+
 | Property name  | Mandatory  | Type  | Format  | Example  | Usage  |
 +================+============+=======+=========+==========+========+
-| ``date``       | Yes        | Form  | ISO     | ``2016-1 | Repres |
-|                |            | data  | 8601    | 2-29T07: | ents   |
-|                |            |       |         | 35:22.57 | the    |
-|                |            |       |         | 1Z``     | date   |
-|                |            |       |         |          | and    |
-|                |            |       |         |          | time   |
-|                |            |       |         |          | when   |
+| ``date``       | Yes        | Form  | ISO     | ``2016-1 | Date   |
+|                |            | data  | 8601    | 2-29T07: | and    |
+|                |            |       |         | 35:22.57 | time   |
+|                |            |       |         | 1Z``     | when   |
 |                |            |       |         |          | the    |
 |                |            |       |         |          | log    |
 |                |            |       |         |          | reques |
@@ -86,11 +84,9 @@ about the following properties:
 |                |            |       |         |          | initia |
 |                |            |       |         |          | ted.   |
 +----------------+------------+-------+---------+----------+--------+
-| ``path``       | No         | Form  | -       | ``users/ | Repres |
-|                |            | data  |         | me/cart/ | ents   |
-|                |            |       |         | ``       | the    |
-|                |            |       |         |          | path   |
-|                |            |       |         |          | taken  |
+| ``path``       | No         | Form  | -       | ``users/ | URL    |
+|                |            | data  |         | me/cart/ | path   |
+|                |            |       |         | ``       | taken  |
 |                |            |       |         |          | by the |
 |                |            |       |         |          | user.  |
 |                |            |       |         |          | If not |
@@ -119,14 +115,15 @@ about the following properties:
 |                |            |       |         |          | in     |
 |                |            |       |         |          | place. |
 +----------------+------------+-------+---------+----------+--------+
-| ``referer``    | No         | Form  | -       | ``https: | Repres |
-|                |            | data  |         | //www.go | ents   |
-|                |            |       |         | ogle.com | the    |
-|                |            |       |         | /``      | domain |
-|                |            |       |         |          | the    |
+| ``referer``    | No         | Form  | -       | ``https: | URL of |
+|                |            | data  |         | //www.go | the    |
+|                |            |       |         | ogle.com | page   |
+|                |            |       |         | /``      | the    |
 |                |            |       |         |          | user   |
 |                |            |       |         |          | comes  |
-|                |            |       |         |          | from.  |
+|                |            |       |         |          | from   |
+|                |            |       |         |          | (if    |
+|                |            |       |         |          | any).  |
 +----------------+------------+-------+---------+----------+--------+
 
 Examples
@@ -140,7 +137,7 @@ Request Djaffar to log an activity with the current date:
 .. code:: javascript
 
     var xhr = new XMLHttpRequest();
-    xhr.open('POST', '/djaffar/logs/', true);
+    xhr.open('POST', '/djaffar/log/', true);
     xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
     xhr.send('date=' + new Date().toISOString());
 
@@ -222,6 +219,14 @@ model through a foreign key, with the following properties:
 +====================+=====================================+====================+
 | ``user_agent``     | User agent of the browser session   | ``CharField``      |
 +--------------------+-------------------------------------+--------------------+
+
+You can get JSON dumps of the activity logs and the session info with
+Django's standard ``dumpdata`` command:
+
+::
+
+    python manage.py dumpdata djaffar.Activity --indent=2 > djaffar-activity.json
+    python manage.py dumpdata djaffar.SessionInfo --indent=2 > djaffar-sessioninfo.json
 
 Appendix
 --------
